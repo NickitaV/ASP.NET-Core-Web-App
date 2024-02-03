@@ -2,7 +2,9 @@
 
 namespace Timesheets.Data.Interfaces
 {
-    public interface IUserRepo: IRepoBase<User>
+    public interface IUserRepo 
     {
+        Task CreateUser(User user);
+     Task <User> GetByLoginAndPasswordHash(string login, byte[] passwordHash);
     }
 }

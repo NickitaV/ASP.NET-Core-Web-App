@@ -1,32 +1,33 @@
-﻿using Timesheets.Data.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Timesheets.Data.Interfaces;
+using Timesheets.Domain;
 using Timesheets.Models;
 
 namespace Timesheets.Data.Implementation
 {
     public class UserRepo : IUserRepo
     {
-      
 
-        Task IRepoBase<User>.Add(User item)
+        private readonly TimesheetDBContext _context;
+
+        public UserRepo(TimesheetDBContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        Task<User> IRepoBase<User>.GetItem(Guid id)
+        public async Task<User> GetByLoginAndPasswordHash(string login, byte[]passwordHash)
         {
-            throw new NotImplementedException();
+            return 
+                await _context.Users.
+                Where(x => x.Username == login && x.PasswordHash == passwordHash)
+                .FirstOrDefaultAsync();
         }
 
-        Task<IEnumerable<User>> IRepoBase<User>.GetItems()
-        {
-            throw new NotImplementedException();
-        }
 
+        public async Task CreateUser(User user) {
+        await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+        }
        
-
-        public Task Update(User item)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
