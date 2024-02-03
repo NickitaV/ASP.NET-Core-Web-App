@@ -1,12 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using System.Runtime.CompilerServices;
 using Timesheets.Data.Implementation;
 using Timesheets.Data.Interfaces;
 using Timesheets.Domain;
 using Timesheets.Domain.Implementation;
 using Timesheets.Domain.Interfaces;
+using Timesheets.Infrastructure.Extension;
+using Timesheets.Models.Dto.Auth;
+
 
 namespace Timesheets
 {
@@ -25,6 +30,7 @@ namespace Timesheets
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<TimesheetDBContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.ConfigureAuthentication(Configuration);
             services.AddScoped<ISheetRepo, SheetRepo>();
             services.AddScoped<IContractRepo, ContractRepo>();
             services.AddScoped<ISheetManager, SheetManager>();
@@ -37,6 +43,9 @@ namespace Timesheets
 
 
         }
+        
+
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
